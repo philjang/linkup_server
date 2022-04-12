@@ -26,7 +26,7 @@
 
 # Project Description
 
-As the world quickly got thrown into the chaos of COVID, many status quos were dynamically shifted. An absurd number of people across the globe saw negative impacts to too many parts of their lives, all at once. One of these facets was the dissolution of social connections, which has been a detriment to the mental well-being of a widespread population, but an issue that is often deprioritized in lieu of more pressing or 'pragmatic' problems. Human beings are by nature communal creatures at our core and I want to leverage technology to address a basic need that society often deems simply extracurricular. I hope that this application will serve as a useful tool to help people gather together and engage one another to form progressively more genuine connecitons. 
+As the world quickly got thrown into the chaos of COVID, many status quos were dynamically shifted. An absurd number of people across the globe saw negative impacts to too many parts of their lives, all at once. One of these facets was the dissolution of social connections, which has been a detriment to the mental well-being of a widespread population, but an issue that is often deprioritized in lieu of more pressing or 'pragmatic' problems. Human beings are by nature communal creatures at our core and I want to leverage technology to address a basic need that society often deems simply extracurricular. I hope that this application will serve as a useful tool to help people gather together and engage one another to form progressively more genuine connections. 
 
 # User Flow/User Stories
 - As a user, I want to make a group and add my friends (mvp for admin to add any users, stretch for social-media style mutual add)
@@ -41,6 +41,7 @@ As the world quickly got thrown into the chaos of COVID, many status quos were d
 - Add ability to comment on specific posts
 - Differentiate between public and private groups
 - Add event making functionality (post-cohort stretch google calendar api)
+- Polls for where to meet
 - Add cloudinary photo posting
 - Add youtube video embedding
 - Add chatroom in groups (post-cohort stretch socket.io)
