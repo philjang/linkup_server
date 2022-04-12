@@ -52,6 +52,7 @@ As the world quickly got thrown into the chaos of COVID, many status quos were d
 - Will continue to work on this throughout the day and update, but I am prioritizing sleep for the sake of sustainability throughout the week. It took me longer than I thought to explore new technologies and decide on a project that I can be excited about without the mvp scope being too out there. Wireframes, ERDs, and RESTful routing will not likely be too different from previous projects in terms of complication for, as I am focusing on exploring python/django. Users M:N groups, groups 1:M discussions(topics), discussions 1:M posts, users 1:M posts.
 
 # ERDs
+![ERD of database](./ERD.drawio.png)
 
 # RESTful Routing
 
