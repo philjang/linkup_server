@@ -54,7 +54,37 @@ As the world quickly got thrown into the chaos of COVID, many status quos were d
 # ERDs
 ![ERD of database](./ERD.drawio.png)
 
+# URL Patterns
+| Path               | Purpose                                                 |
+| ------------------ | ------------------------------------------------------- |
+| `/`                | Landing Page                                            |
+| `/login`           | Login Page                                              |
+| `/register`        | Register Page                                           |
+| `/profile`         | User home page that displays user's groups              |
+| `/groups/:id`      | Group page that displays groups's discussions and users |
+| `/discussions/:id` | Discussion page that displays discussions's posts       |
+
 # RESTful Routing
+| Method | Path               | Purpose                                                      |
+| ------ | ------------------ | ------------------------------------------------------------ |
+| POST   | `/users`           | CREATE a new user                                            |
+| GET    | `/users/:id`       | READ all groups associated with current user                 |
+| POST   | `/groups`          | CREATE a new group                                           |
+| PUT    | `/groups/:id`      | UPDATE a group with :id, if admin                            |
+| DELETE | `/groups/:id`      | DELETE a group with :id, if admin                            |
+| GET    | `/groups/:id`      | READ all discussions and users associated to group with :id  |
+| POST   | `/discussions`     | CREATE a new discussion                                      |
+| PUT    | `/discussions/:id` | UPDATE a discussion with :id, if admin                       |
+| DELETE | `/discussions/:id` | DELETE a discussion with :id, if admin                       |
+| GET    | `/discussions/:id` | READ all posts associated to discussion with :id             |
+| POST   | `/posts`           | CREATE a new post                                            |
+| PUT    | `/posts/:id`       | UPDATE a post with :id, if owner                             |
+| DELETE | `/posts/:id`       | DELETE a post with :id, if owner                             |
 
 
 # Sprints
+- Tuesday: Review/Research Python/Django
+- Wednesday: Begin back-end construction
+- Thursday: Finish back-end and begin React front-end
+- Friday: Finish front-end
+- Saturday: Styling and refactoring
