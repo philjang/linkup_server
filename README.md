@@ -39,6 +39,7 @@ As the world quickly got thrown into the chaos of COVID, many status quos were d
 
 # Stretch Goals
 - Add ability to comment on specific posts
+- Add sorting functionality for discussions
 - Differentiate between public and private groups
 - Add event making functionality (post-cohort stretch google calendar api)
 - Polls for where to meet
@@ -49,10 +50,14 @@ As the world quickly got thrown into the chaos of COVID, many status quos were d
 - Sass for styling
 
 # Wireframes
-- Will continue to work on this throughout the day and update, but I am prioritizing sleep for the sake of sustainability throughout the week. It took me longer than I thought to explore new technologies and decide on a project that I can be excited about without the mvp scope being too out there. Wireframes, ERDs, and RESTful routing will not likely be too different from previous projects in terms of complication for, as I am focusing on exploring python/django. Users M:N groups, groups 1:M discussions(topics), discussions 1:M posts, users 1:M posts.
+![Landing Page](assets/Landing.png)
+![Login/Register Page](assets/Login.png)
+![User Home Page](assets/Profile.png)
+![Group Page](assets/Group.png)
+![Discussion Page](assets/Discussion.png)
 
 # ERDs
-![ERD of database](./ERD.drawio.png)
+![ERD of database](assets/ERD.drawio.png)
 
 # URL Patterns
 | Path               | Purpose                                                 |
@@ -80,7 +85,6 @@ As the world quickly got thrown into the chaos of COVID, many status quos were d
 | POST   | `/posts`           | CREATE a new post                                            |
 | PUT    | `/posts/:id`       | UPDATE a post with :id, if owner                             |
 | DELETE | `/posts/:id`       | DELETE a post with :id, if owner                             |
-
 
 # Sprints
 - Tuesday: Review/Research Python/Django
