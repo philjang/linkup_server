@@ -35,6 +35,7 @@ As the world quickly got thrown into the chaos of COVID, many status quos were d
 - As a user, I want to be able to edit a post if I make a typo
 - As a user, I want to be able to delete any posts that I created
 - As a user, I want to be able to join multiple groups 
+- As a user, I want to be able to see who is in my groups
 - As a user, I want to be able to leave groups if needed
 
 # Stretch Goals
