@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # like controller middleware from express server.js, routes to discussions_api urls file
+    path('', include('discussions_api.urls'))
 ]
