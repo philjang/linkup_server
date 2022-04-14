@@ -11,6 +11,32 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
+
+# .env configuration
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
+
+# verify environment version
+if os.getenv('ENV') == 'development':
+    # use db name in .env
+    DB_NAME = os.getenv('DB_NAME_DEV') # used in DATABASES section below
+
+    DB = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': DB_NAME
+    }
+    DEBUG = True # provides good error messages during dev
+    # only allow locally running client at port 3000 for CORS
+    CORS_ORIGIN_WHITELIST = ['http://localhost:3000']
+else: 
+    # use dj_database_url package if on production, on heroku
+    DB = dj_database_url.config()
+    DEBUG = False
+    CORS_ORIGIN_WHITELIST = [
+        os.getenv('CLIENT_ORIGIN')
+    ]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +46,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-62vz%ulxi_ixpoa6o=fki5_&_xm^$w$(sp2yq4%6sr$zl26i1f'
+SECRET_KEY = os.getenv('SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -34,6 +60,7 @@ INSTALLED_APPS = [
     'discussions_api',
     'corsheaders', # to allow cross origin resource sharing
     'rest_framework', # for serializers
+    'rest_framework.authtoken', # for auth token
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,6 +82,7 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+# entry point for project's urls.py 
 ROOT_URLCONF = 'linkup_rest_api.urls'
 
 TEMPLATES = [
@@ -73,6 +101,7 @@ TEMPLATES = [
     },
 ]
 
+# standard deployment for python - how server and application talk to each other
 WSGI_APPLICATION = 'linkup_rest_api.wsgi.application'
 
 
@@ -80,12 +109,18 @@ WSGI_APPLICATION = 'linkup_rest_api.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'linkup',
-    }
+    'default': DB
 }
 
+# Django Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication'
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_frameowrk.permissions.IsAuthenticated'
+    ]
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
