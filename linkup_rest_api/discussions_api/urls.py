@@ -8,5 +8,7 @@ urlpatterns = [
     # api/discussions urls will be routed to DiscussionList in views
     path('api/discussions', views.DiscussionList.as_view(), name='discussion_list'),
     # api/discussions urls will be routed to DiscussionDetail in views
-    path('api/discussions/<int:pk>', views.DiscussionDetail.as_view(), name='discussion_detail')
+    path('api/discussions/<int:pk>', views.DiscussionDetail.as_view(), name='discussion_detail'),
+    path('api/posts', views.PostList.as_view(), name='post_list'),
+    path('api/posts/<int:pk>', views.PostDetail.as_view(), name='post_detail')
 ]

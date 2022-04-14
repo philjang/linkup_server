@@ -2,8 +2,8 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework import generics
-from .serializers import DiscussionSerializer
-from .models import Discussion
+from .serializers import DiscussionSerializer, PostSerializer
+from .models import Discussion, Post
 
 # views to connect DiscussionSerializer to Discussion model
 
@@ -18,3 +18,12 @@ class DiscussionList(generics.ListCreateAPIView):
 class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Discussion.objects.all().order_by('id')
     serializer_class = DiscussionSerializer
+
+
+class PostList(generics.ListCreateAPIView):
+    queryset = Post.objects.all().order_by('id')
+    serializer_class = PostSerializer
+
+class PostDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.all().order_by('id')
+    serializer_class = PostSerializer
