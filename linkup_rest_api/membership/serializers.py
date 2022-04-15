@@ -13,6 +13,8 @@ class GroupSerializer(serializers.ModelSerializer):
 
 # defined under GroupSerializer to have access for using as self.posts
 class UserSerializer(serializers.ModelSerializer): 
+    # this serializer is used for user creation
+    # login serializer inherits from this serializer to require certain data for login
     groups = GroupSerializer(many=True, read_only=True)
     class Meta:
         model = get_user_model()
