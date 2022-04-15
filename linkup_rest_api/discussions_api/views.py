@@ -4,7 +4,7 @@
 from django.shortcuts import get_object_or_404 # to get single model instance
 from rest_framework import generics, status # import generic API views, status module for http response
 from rest_framework.response import Response # import to modify CRUD methods
-from rest_framework.exceptions import PermissionDenied # import function for raising error when missing token
+from rest_framework.exceptions import PermissionDenied # import function for raising error when missing token (403 forbidden)
 from .serializers import DiscussionSerializer, PostSerializer
 from .models import Discussion, Post
 
@@ -18,9 +18,11 @@ class DiscussionList(generics.ListCreateAPIView):
     # queryset = Discussion.objects.all().order_by('id')
     # # tell django what serializer to use
     # serializer_class = DiscussionSerializer
-    def get(self, request):
+    def get(self, request, group_id):
         """GET /discussions""" # not used in routing chart
-        discussions = Discussion.objects.all().order_by('name')
+        # discussions = Discussion.objects.all().order_by('name')
+        # to filter by the current group
+        discussions = Discussion.objects.filter(group = group_id)
         serializer = DiscussionSerializer(discussions, many=True)
         # in generics -> method_APIVIEW -> get() -> list():
         # serializer = model_serializer(model_queryset, many=True)
@@ -50,24 +52,24 @@ class DiscussionList(generics.ListCreateAPIView):
 
 
 class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Discussion.objects.all().order_by('id')
-    serializer_class = DiscussionSerializer
+    # queryset = Discussion.objects.all().order_by('id')
+    # serializer_class = DiscussionSerializer
     
-    def get(self, request, pk):
+    def get(self, request, pk, group_id):
         """GET /discussions/<int:pk>"""
         discussion = get_object_or_404(Discussion, pk=pk)
 
         # if we only want to show a discussion if the user is signed in
         # like requiresToken middleware from express projects
-        if request.user != discussion.admin:
+        if discussion.group not in request.user.groups:
             # raise like throw in js (cause a PermissionDenied error to occur)
             raise PermissionDenied('Unauthorized action')
 
         serializer = DiscussionSerializer(discussion)
         # only responds with discussion data
         # return Response(serializer.data)
-        # responding with 'discussion' property in json
-        return Response({ 'discussion': serializer.data })
+        # responding with discussion and asociated admin's id, group, as well as posts
+        return Response({ 'discussion': serializer.data, 'admin_id': serializer.data.admin, 'posts': serializer.data.posts, 'group': serializer.data.group })
         # in generics -> method_APIVIEW -> get() -> retrieve():
         # serializer = model_serializer(get_object_or_404(model_queryset, **filter_kwargs))
         # return Response(serializer.data)
@@ -75,6 +77,9 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, pk):
         """DELETE /discussions/<int:pk>"""
         discussion = get_object_or_404(Discussion, pk=pk)
+        # same as get() for auth error
+        if discussion.group not in request.user.groups:
+            raise PermissionDenied('Unauthorized action')
         discussion.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -82,6 +87,10 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, pk):
         """UPDATE /discussions/<int:pk>"""
         discussion = get_object_or_404(Discussion, pk=pk)
+        # same as get() for auth error
+        if discussion.group not in request.user.groups:
+            raise PermissionDenied('Unauthorized action')
+
         # validate updates with serializer 
         # similar format to combining get and post
         serializer = DiscussionSerializer(discussion, data=request.data)

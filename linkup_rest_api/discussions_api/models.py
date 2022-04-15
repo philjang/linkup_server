@@ -12,7 +12,7 @@ class Discussion(models.Model):
     admin = models.IntegerField()
 
     def __str__(self):
-        return f'The discussion topic: {self.name} - {self.description}'
+        return f'The discussion topic: {self.name} - {self.description} (id:{self.id})'
 
 # Model schema for discussions_api_post table
 class Post(models.Model):
@@ -24,4 +24,4 @@ class Post(models.Model):
     time_posted = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'post: {self.content}'
+        return f'post: {self.content}, by: {self.owner} (id:{self.id})'
