@@ -73,7 +73,9 @@ As the world quickly got thrown into the chaos of COVID, many status quos were d
 # RESTful Routing
 | Method | Path               | Purpose                                                      |
 | ------ | ------------------ | ------------------------------------------------------------ |
-| POST   | `/users`           | CREATE a new user                                            |
+| POST   | `/register`        | CREATE a new user                                            |
+| POST   | `/login`           | logs in an existing user                                     |
+| POST   | `/logout`          | logs user out                                                |
 | GET    | `/users/:id`       | READ all groups associated with current user                 |
 | POST   | `/groups`          | CREATE a new group                                           |
 | PUT    | `/groups/:id`      | UPDATE a group with :id, if admin                            |

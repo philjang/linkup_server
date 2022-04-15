@@ -10,7 +10,7 @@ class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
         if not username:
             raise ValueError('User must have a username')
-        user = self.model(username=self.username, email=self.normalize_email(email))
+        user = self.model(username=username, email=self.normalize_email(email))
         # built in django auth method to hash password
         user.set_password(password)
         # saves created user to db
@@ -72,3 +72,6 @@ class Membership(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     date_joined = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user} joined {self.group} on {self.date_joined}'
