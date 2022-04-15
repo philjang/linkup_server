@@ -72,6 +72,11 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
         # serializer = model_serializer(get_object_or_404(model_queryset, **filter_kwargs))
         # return Response(serializer.data)
 
+    def delete(self, request, pk):
+        """DELETE /discussions/<int:pk>"""
+        discussion = get_object_or_404(Discussion, pk=pk)
+        discussion.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
