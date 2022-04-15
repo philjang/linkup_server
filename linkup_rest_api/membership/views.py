@@ -71,6 +71,8 @@ class LogOut(generics.DestroyAPIView):
 class UserDetail(generics.RetrieveAPIView):
     def get(self, request, pk):
         """GET membership/users/<int:pk>/"""
+        if request.user.id != pk:
+            raise PermissionDenied('Unauthorized action')
         user = request.user
         return Response({ 'user': user.data, 'groups': user.data['groups'] })
 
@@ -111,7 +113,7 @@ class GroupDetail(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, pk):
         """DELETE membership/groups/<int:pk>/"""
         group = get_object_or_404(Group, pk=pk)
-        if group.admin != request.user.id:
+        if request.user.id != group.admin:
             raise PermissionDenied('Unauthorized action')
         group.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

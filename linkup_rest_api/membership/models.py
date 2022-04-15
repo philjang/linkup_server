@@ -18,7 +18,7 @@ class UserManager(BaseUserManager):
         # always return user so it can be used when method is invoked
         return user
     
-    def create_superuser(self, username, email, password=None):
+    def create_superuser(self, username, email, password):
         user = self.create_user(username, email, password)
         user.is_superuser = True
         user.is_staff = True
