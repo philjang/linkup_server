@@ -17,8 +17,8 @@ class Discussion(models.Model):
 # Model schema for discussions_api_post table
 class Post(models.Model):
     # considered best practice to get user model using 'get_user_model'
-    # this method will nesure the User model comes from settings.py file (AUTH_USER_MODEL = 'membership.User')
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='posts')
+    # this method will ensure the User model comes from settings.py file (AUTH_USER_MODEL = 'membership.User')
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='posts')
     discussion = models.ForeignKey(Discussion, on_delete=models.CASCADE, related_name='posts')
     content = models.TextField()
     time_posted = models.DateTimeField(auto_now_add=True)
