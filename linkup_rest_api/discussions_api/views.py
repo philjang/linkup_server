@@ -19,7 +19,7 @@ class DiscussionList(generics.ListCreateAPIView):
     # # tell django what serializer to use
     # serializer_class = DiscussionSerializer
     def get(self, request, group_id):
-        """GET /discussions""" # not used in routing chart
+        """GET api/discussions/""" # not used in routing chart
         # discussions = Discussion.objects.all().order_by('name')
         # to filter by the current group
         discussions = Discussion.objects.filter(group = group_id)
@@ -30,7 +30,7 @@ class DiscussionList(generics.ListCreateAPIView):
         return Response(serializer.data)
 
     def post(self, request, group_id):
-        """POST /discussions"""
+        """POST api/discussions/"""
         # set admin field of new discussion to current-user for update/delete access
         request.data['admin'] = request.user.id
         request.data['group'] = group_id ### todo - does this successfully link current group?
@@ -56,7 +56,7 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
     # serializer_class = DiscussionSerializer
     
     def get(self, request, pk):
-        """GET /discussions/<int:pk>"""
+        """GET api/discussions/<int:pk>/"""
         discussion = get_object_or_404(Discussion, pk=pk)
 
         # check that user is in the group that contains this discussion
@@ -74,7 +74,7 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
         # return Response(serializer.data)
 
     def delete(self, request, pk):
-        """DELETE /discussions/<int:pk>"""
+        """DELETE api/discussions/<int:pk>/"""
         discussion = get_object_or_404(Discussion, pk=pk)
         if request.user.id != discussion.admin:
             raise PermissionDenied('Unauthorized action')
@@ -83,7 +83,7 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
 
     # update() for put, partial_update() for patch
     def update(self, request, pk):
-        """UPDATE /discussions/<int:pk>"""
+        """UPDATE api/discussions/<int:pk>/"""
         # locate discussion to update - returns object representation of found discussion
         discussion = get_object_or_404(Discussion, pk=pk)
 

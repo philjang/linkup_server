@@ -20,7 +20,7 @@ class Register(generics.CreateAPIView):
     serializer_class = UserRegisterSerializer
 
     def post(self, request):
-        """POST /register"""
+        """POST membership/register/"""
         # passes request data to validate, doesn't create a model instance (not using Modelserializer)
         user = UserRegisterSerializer(data=request.data)
         if user.is_valid(): # passes RegisterSerializer checks for password
@@ -42,7 +42,7 @@ class LogIn(generics.CreateAPIView):
     serializer_class = UserSerializer
 
     def post(self, request):
-        """POST /login"""
+        """POST membership/login/"""
         credentials = request.data
         # pass username and password along with request to django's authenticate method
         user = authenticate(request, username=credentials['username'], password=credentials['password'])
@@ -61,19 +61,23 @@ class LogIn(generics.CreateAPIView):
 
 class LogOut(generics.DestroyAPIView):
     def delete(self, request):
+        """DELETE membership/logout/"""
         # remove token from user
         request.user.delete_token()
         # django logout method removes all session data
         logout(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class UserDetail(generics.ListAPIView):
-    pass
+class UserDetail(generics.RetrieveAPIView):
+    def get(self, request, pk):
+        """GET membership/users/<int:pk>/"""
+        user = request.user
+        return Response({ 'user': user.data, 'groups': user.data['groups'] })
 
 class GroupList(generics.ListCreateAPIView):
     # permission_classes=(IsAuthenticated)
     def get(self, request):
-        """GET /groups"""
+        """GET membership/groups/"""
         groups = Group.objects.all()
         serializer = GroupSerializer(groups, many=True)
         return Response(serializer.data)
@@ -82,7 +86,7 @@ class GroupList(generics.ListCreateAPIView):
     # serializer_class used when posting group
     serializer_class = GroupSerializer
     def post(self, request):
-        """POST /groups"""
+        """POST membership/groups/"""
         request.data['admin'] = request.user.id
         new_group = GroupSerializer(data=request.data)
         if new_group.is_valid():
@@ -97,7 +101,7 @@ class GroupDetail(generics.RetrieveUpdateDestroyAPIView):
         # if we only want to show a discussion if the user is signed in
         # like requiresToken middleware from express projects
     def get(self, request, pk):
-        """GET /groups/<int:pk>"""
+        """GET membership/groups/<int:pk>/"""
         group = get_object_or_404(Group, pk=pk)
         if request.user not in group.users:
             raise PermissionDenied('Unauthorized action')
@@ -105,7 +109,7 @@ class GroupDetail(generics.RetrieveUpdateDestroyAPIView):
         return Response({ 'group': serializer.data, 'users': serializer.data['users'], 'discussions': serializer.data['discussions'], 'admin_id': serializer.data['admin'] })
 
     def delete(self, request, pk):
-        """DELETE /groups/<int:pk>"""
+        """DELETE membership/groups/<int:pk>/"""
         group = get_object_or_404(Group, pk=pk)
         if group.admin != request.user.id:
             raise PermissionDenied('Unauthorized action')
@@ -113,7 +117,7 @@ class GroupDetail(generics.RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def update(self, request, pk):
-        """UPDATE /groups/<int:pk>"""
+        """UPDATE membership/groups/<int:pk>/"""
         group = get_object_or_404(Group, pk=pk)
         if request.user.id != group.admin:
             raise PermissionDenied('Unauthorized action')

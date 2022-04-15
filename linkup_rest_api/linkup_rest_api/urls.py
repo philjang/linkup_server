@@ -20,6 +20,6 @@ from django.conf.urls import include
 urlpatterns = [
     path('admin/', admin.site.urls),
     # like controller middleware from express server.js, routes to discussions_api urls file
-    path('', include('discussions_api.urls')),
-    path('', include('membership.urls'))
+    path('api/', include('discussions_api.urls')),
+    path('membership/', include('membership.urls'))
 ]
