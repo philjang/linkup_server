@@ -78,6 +78,18 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
         discussion.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    # update() for put, partial_update() for patch
+    def update(self, request, pk):
+        """UPDATE /discussions/<int:pk>"""
+        discussion = get_object_or_404(Discussion, pk=pk)
+        # validate updates with serializer 
+        # similar format to combining get and post
+        serializer = DiscussionSerializer(discussion, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else: # if serializer validation fails
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
 
 
 class PostList(generics.ListCreateAPIView):
