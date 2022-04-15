@@ -60,7 +60,12 @@ class LogIn(generics.CreateAPIView):
  
 
 class LogOut(generics.DestroyAPIView):
-    pass
+    def delete(self, request):
+        # remove token from user
+        request.user.delete_token()
+        # django logout method removes all session data
+        logout(request)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class UserDetail(generics.ListAPIView):
     pass
