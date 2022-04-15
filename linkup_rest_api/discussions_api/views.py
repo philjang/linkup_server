@@ -105,9 +105,58 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PostList(generics.ListCreateAPIView):
-    queryset = Post.objects.all().order_by('id')
+    # queryset = Post.objects.all().order_by('id')
+    # serializer_class = PostSerializer
+    def get(self, request): # not used in routing chart
+        """GET api/posts/"""
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+    
     serializer_class = PostSerializer
+    def post(self, request, discussion_id):
+        """POST api/posts/"""
+        request.data['owner'] = request.user.id
+        request.data['discussion'] = discussion_id
+        new_post = PostSerializer(data=request.data)
+        if new_post.is_valid():
+            new_post.save()
+            return Response(new_post.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(new_post.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Post.objects.all().order_by('id')
-    serializer_class = PostSerializer
+    # queryset = Post.objects.all().order_by('id')
+    # serializer_class = PostSerializer
+    def get(self, request, pk):
+        """GET api/posts/<int:pk>""" # not used in routing chart
+        post = get_object_or_404(Post, pk=pk)
+        if request.user != post.owner:
+            raise PermissionDenied('Unauthorized action')
+        serializer = PostSerializer(post)
+        return Response(serializer.data)
+
+    def delete(self, request, pk):
+        """DELETE api/posts/<int:pk>"""
+        post = get_object_or_404(Post, pk=pk)
+        if request.user != post.owner:
+            raise PermissionDenied('Unauthorized action')
+        post.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def update(self, request, pk):
+        """UPDATE api/posts/<int:pk>"""
+        post = get_object_or_404(Post, pk=pk)
+        if request.user.id != post.owner:
+            raise PermissionDenied('Unauthorized action')
+        request.data['owner'] = request.user.id
+        serializer = PostSerializer(post, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+
+

@@ -35,6 +35,7 @@ class Register(generics.CreateAPIView):
         else: # UserRegisterSerializer validation failed
             return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class LogIn(generics.CreateAPIView):
     authentication_classes = ()
     permission_classes = ()
@@ -68,6 +69,7 @@ class LogOut(generics.DestroyAPIView):
         logout(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class UserDetail(generics.RetrieveAPIView):
     def get(self, request, pk):
         """GET membership/users/<int:pk>/"""
@@ -76,10 +78,11 @@ class UserDetail(generics.RetrieveAPIView):
         user = request.user
         return Response({ 'user': user.data, 'groups': user.data['groups'] })
 
+
 class GroupList(generics.ListCreateAPIView):
     # permission_classes=(IsAuthenticated)
     def get(self, request):
-        """GET membership/groups/"""
+        """GET membership/groups/""" # not used in routing chart
         groups = Group.objects.all()
         serializer = GroupSerializer(groups, many=True)
         return Response(serializer.data)
@@ -96,6 +99,7 @@ class GroupList(generics.ListCreateAPIView):
             return Response(new_group.data, status=status.HTTP_201_CREATED)
         else:
             return Response(new_group.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class GroupDetail(generics.RetrieveUpdateDestroyAPIView):
     # permission_classes=(IsAuthenticated)
