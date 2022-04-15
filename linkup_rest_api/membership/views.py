@@ -1,3 +1,4 @@
+from re import M
 from webbrowser import get
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model, authenticate, login, logout
@@ -35,8 +36,29 @@ class Register(generics.CreateAPIView):
             return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LogIn(generics.CreateAPIView):
-    pass
-       
+    authentication_classes = ()
+    permission_classes = ()
+
+    serializer_class = UserSerializer
+
+    def post(self, request):
+        """POST /login"""
+        credentials = request.data
+        # pass username and password along with request to django's authenticate method
+        user = authenticate(request, username=credentials['username'], password=credentials['password'])
+        # authentication conditionals
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                # return response with token
+                return Response({ 'id': user.id, 'username': user.username, 'token': user.get_auth_token() })
+                # return Response({ 'user': { 'id': user.id, 'username': user.username, 'token': user.get_auth_token() }})
+            else: # failed active status validation
+                return Response({ 'msg': 'The account is inactive.'}, status=status.HTTP_400_BAD_REQUEST)
+        else: # failed django authenticate method
+            return Response({ 'msg': 'The username and/or password is incorrect.'}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+ 
+
 class LogOut(generics.DestroyAPIView):
     pass
 
