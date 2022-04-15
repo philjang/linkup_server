@@ -34,33 +34,32 @@ class DiscussionList(generics.ListCreateAPIView):
         # set admin field of new discussion to current-user for update/delete access
         request.data['admin'] = request.user.id
         request.data['group'] = group_id ### todo - does this successfully link current group?
-        serializer = DiscussionSerializer(data=request.data)
-        # serializer = model_serializer(data=request.data)
+        new_discussion = DiscussionSerializer(data=request.data)
+        # new_model_instance = model_serializer(data=request.data)
         # { name: 'discussion 1', description: 'description 1' ... }
-        # can also -> serializer = model_serializer(data=request.data[model_name])
+        # can also -> new_model_instance = model_serializer(data=request.data[model_name])
         # { model_name: { name: 'discussion 1', description: 'description 1' ... }}
 
-        if serializer.is_valid(): # serializer validation
-            serializer.save()
+        if new_discussion.is_valid(): # serializer validation
+            new_discussion.save()
             # responds with data
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(new_discussion.data, status=status.HTTP_201_CREATED)
             # responds with data under `model_name`` property (can send data of related tables with a dictionary)
             # return Response({ model_name: serializer.data, model_name_2: model2_data }, status=status.HTTP_201_CREATED)
 
         else: # if validation fails
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+            return Response(new_discussion.errors, status=status.HTTP_400_BAD_REQUEST) 
 
 
 class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
     # queryset = Discussion.objects.all().order_by('id')
     # serializer_class = DiscussionSerializer
     
-    def get(self, request, pk, group_id):
+    def get(self, request, pk):
         """GET /discussions/<int:pk>"""
         discussion = get_object_or_404(Discussion, pk=pk)
 
-        # if we only want to show a discussion if the user is signed in
-        # like requiresToken middleware from express projects
+        # check that user is in the group that contains this discussion
         if discussion.group not in request.user.groups:
             # raise like throw in js (cause a PermissionDenied error to occur)
             raise PermissionDenied('Unauthorized action')
@@ -69,7 +68,7 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
         # only responds with discussion data
         # return Response(serializer.data)
         # responding with discussion and asociated admin's id, group, as well as posts
-        return Response({ 'discussion': serializer.data, 'admin_id': serializer.data.admin, 'posts': serializer.data.posts, 'group': serializer.data.group })
+        return Response({ 'discussion': serializer.data, 'posts': serializer.data['posts'], 'group': serializer.data['group'], 'admin_id': serializer.data['admin'] })
         # in generics -> method_APIVIEW -> get() -> retrieve():
         # serializer = model_serializer(get_object_or_404(model_queryset, **filter_kwargs))
         # return Response(serializer.data)
@@ -77,8 +76,7 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, pk):
         """DELETE /discussions/<int:pk>"""
         discussion = get_object_or_404(Discussion, pk=pk)
-        # same as get() for auth error
-        if discussion.group not in request.user.groups:
+        if request.user.id != discussion.admin:
             raise PermissionDenied('Unauthorized action')
         discussion.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -86,11 +84,16 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
     # update() for put, partial_update() for patch
     def update(self, request, pk):
         """UPDATE /discussions/<int:pk>"""
+        # locate discussion to update - returns object representation of found discussion
         discussion = get_object_or_404(Discussion, pk=pk)
-        # same as get() for auth error
-        if discussion.group not in request.user.groups:
+
+        # check that user making request is admin
+        if request.user.id != discussion.admin:
             raise PermissionDenied('Unauthorized action')
 
+        # makes sure admin field is set to current user's id (prevents sending false credentials in request data to change admin) 
+        request.data['admin'] = request.user.id
+        
         # validate updates with serializer 
         # similar format to combining get and post
         serializer = DiscussionSerializer(discussion, data=request.data)

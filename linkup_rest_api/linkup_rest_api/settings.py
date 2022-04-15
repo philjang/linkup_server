@@ -167,7 +167,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# Use customer user model as the auth user for admin view
+# Use custom user model as the auth user for admin view
 AUTH_USER_MODEL = 'membership.User'
 
 # Default primary key field type

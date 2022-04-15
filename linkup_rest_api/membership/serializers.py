@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Group
+from linkup_rest_api.discussions_api.serializers import DiscussionSerializer
 from .serializers import GroupSerializer # to use in UserSerializer
 
 # Django uses serializers.ModelSerializer convert sql to JSON
@@ -21,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return get_user_model().objects.create_user(**validated_data)
 
-class UserRegisterSerializer(serializers.Serializer):
+class UserRegisterSerializer(serializers.Serializer): # note this is using Serializer, not ModelSerializer (no nested class Meta - used just to check two passwords to each other)
     # require username, email, password, and password confirmation for sign up
     username = serializers.CharField(max_length=150, required=True)
     email = serializers.CharField(max_length=300, required=True)
@@ -40,6 +41,7 @@ class UserRegisterSerializer(serializers.Serializer):
 
 class GroupSerializer(serializers.ModelSerializer):
     users = UserSerializer(many=True, read_only=True)
+    discussions = DiscussionSerializer(many=True, read_only=True)
     class Meta:
         model = Group
         # can also use fields = __all__, but best practice to be explicit
