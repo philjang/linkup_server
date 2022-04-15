@@ -1,3 +1,4 @@
+from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager # imports custom classes will inherit from
@@ -59,9 +60,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 # Model schema for group table
 class Group(models.Model):
-    users = models.ManyToManyField(get_user_model())
+    users = models.ManyToManyField(get_user_model(), related_name='groups', through='Membership', through_fields=('group','user'))
     name = models.CharField(max_length=255)
     admin = models.IntegerField()
 
     def __str__(self):
         return f'group: {self.name}, (id:{self.id})'
+
+# custom join table - allows extra fields if needed
+class Membership(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    date_joined = models.DateField(auto_now_add=True)

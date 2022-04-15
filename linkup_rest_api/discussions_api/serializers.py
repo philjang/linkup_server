@@ -7,7 +7,7 @@ from .models import Discussion, Post
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        # can also use fields = __all__, but best practice to be explicit
+        # can also use fields = '__all__', but best practice to be explicit
         fields = ('id','content','time_posted','discussion','owner')
 
 # defined under PostSerializer to have access for using as self.posts

@@ -59,6 +59,7 @@ ALLOWED_HOSTS = ['*'] # like CORS but does not validate protocol (http/https/ftp
 
 INSTALLED_APPS = [
     'discussions_api',
+    'membership',
     'corsheaders', # to allow cross origin resource sharing
     'rest_framework', # for serializers
     'rest_framework.authtoken', # for auth token
