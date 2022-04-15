@@ -57,3 +57,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self
 
 
+# Model schema for group table
+class Group(models.Model):
+    users = models.ManyToManyField(get_user_model())
+    name = models.CharField(max_length=255)
+    admin = models.IntegerField()
+
+    def __str__(self):
+        return f'group: {self.name}, (id:{self.id})'
