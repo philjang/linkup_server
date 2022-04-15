@@ -51,7 +51,8 @@ SECRET_KEY = os.getenv('SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-ALLOWED_HOSTS = []
+# CORS will still block any sites we do not allow
+ALLOWED_HOSTS = ['*'] # like CORS but does not validate protocol (http/https/ftp/etc) or port
 
 
 # Application definition
@@ -80,7 +81,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True # used for testing with postman
 
 # entry point for project's urls.py 
 ROOT_URLCONF = 'linkup_rest_api.urls'
@@ -113,11 +114,14 @@ DATABASES = {
 }
 
 # Django Rest Framework
+# these can be overridden on individual views
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        # sets up tokenauthentication by default - interacting with API will require a token to use a view
         'rest_framework.authentication.TokenAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
+        # class used by default to validate token
         'rest_frameowrk.permissions.IsAuthenticated'
     ]
 }
@@ -148,7 +152,11 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
+# I18N stands for internationalization (common term in UX community)
 USE_I18N = True
+
+# L10N stands for localization
+USE_L10N = True # displays numbers and dates using format of current locale
 
 USE_TZ = True
 
@@ -157,6 +165,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Use customer user model as the auth user for admin view
+AUTH_USER_MODEL = 'membership.User'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

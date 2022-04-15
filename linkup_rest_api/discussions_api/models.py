@@ -1,6 +1,7 @@
 from tkinter import CASCADE
 from django.db import models
-from django.contrib.auth.models import Group, User
+from django.contrib.auth import get_user_model
+from ..membership.models import Group
 
 # Create your models here.
 # Model schema for discussions_api_discussion table
@@ -15,7 +16,9 @@ class Discussion(models.Model):
 
 # Model schema for discussions_api_post table
 class Post(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+    # considered best practice to get user model using 'get_user_model'
+    # this method will nesure the User model comes from settings.py file (AUTH_USER_MODEL = 'membership.User')
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='posts')
     discussion = models.ForeignKey(Discussion, on_delete=models.CASCADE, related_name='posts')
     content = models.TextField()
     time_posted = models.DateTimeField(auto_now_add=True)
