@@ -29,11 +29,11 @@ class DiscussionList(generics.ListCreateAPIView):
         # return Response(serializer.data)
         return Response(serializer.data)
 
-    def post(self, request, circle_id):
+    def post(self, request):
         """POST api/discussions/"""
         # set admin field of new discussion to current-user for update/delete access
         request.data['admin'] = request.user.id
-        request.data['circle'] = circle_id ### todo - does this successfully link current group?
+        request.data['circle'] = request.data['circle_id'] ### todo - does this successfully link current group?
         new_discussion = DiscussionSerializer(data=request.data)
         # new_model_instance = model_serializer(data=request.data)
         # { name: 'discussion 1', description: 'description 1' ... }
@@ -60,6 +60,7 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
         discussion = get_object_or_404(Discussion, pk=pk)
 
         # check that user is in the group that contains this discussion
+        print(request.user.circles)
         if discussion.circle not in request.user.circles:
             # raise like throw in js (cause a PermissionDenied error to occur)
             raise PermissionDenied('Unauthorized action')
@@ -93,6 +94,7 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
 
         # makes sure admin field is set to current user's id (prevents sending false credentials in request data to change admin) 
         request.data['admin'] = request.user.id
+        request.data['circle'] = request.data['circle_id']
         
         # validate updates with serializer 
         # similar format to combining get and post

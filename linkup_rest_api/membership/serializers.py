@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
     circles = CircleSerializer(many=True, read_only=True)
     class Meta:
         model = get_user_model()
-        fields = ('id', 'username', 'email', 'password') ### do I need password removed?
+        fields = ('id', 'circles', 'username', 'email', 'password') ### do I need password removed?
         # prevents sending password along with data when using views
         extra_kwargs = { 'password': { 'write_only': True, 'min_length': 5 }}
     # method used for model creation

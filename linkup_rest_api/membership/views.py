@@ -7,7 +7,7 @@ from rest_framework.response import Response
 # from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from .serializers import CircleSerializer, UserRegisterSerializer, UserSerializer
-from .models import Circle
+from .models import Circle, user_circle
 
 
 # Create your views here.
@@ -76,7 +76,10 @@ class UserDetail(generics.RetrieveAPIView):
         if request.user.id != pk:
             raise PermissionDenied('Unauthorized action')
         user = request.user
-        return Response({ 'user': user.data, 'circles': user.data['circles'] })
+        # print(user)
+        serializer = UserSerializer(user)
+        # print(serializer)
+        return Response({ 'user': serializer.data, 'circles': serializer.data['circles'] })
 
 
 class CircleList(generics.ListCreateAPIView):
@@ -96,6 +99,11 @@ class CircleList(generics.ListCreateAPIView):
         new_circle = CircleSerializer(data=request.data)
         if new_circle.is_valid():
             new_circle.save()
+            # print(new_circle)
+            circle = get_object_or_404(Circle, pk=new_circle.data['id'])
+            # print(circle)
+            circle.users.add(request.user)
+            circle.save()
             return Response(new_circle.data, status=status.HTTP_201_CREATED)
         else:
             return Response(new_circle.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -109,6 +117,8 @@ class CircleDetail(generics.RetrieveUpdateDestroyAPIView):
     def get(self, request, pk):
         """GET membership/groups/<int:pk>/"""
         circle = get_object_or_404(Circle, pk=pk)
+        print(request.user)
+        print(circle.id)
         if request.user not in circle.users:
             raise PermissionDenied('Unauthorized action')
         serializer = CircleSerializer(circle)
