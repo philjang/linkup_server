@@ -6,8 +6,8 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 # from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
-from .serializers import GroupSerializer, UserRegisterSerializer, UserSerializer
-from .models import Group
+from .serializers import CircleSerializer, UserRegisterSerializer, UserSerializer
+from .models import Circle
 
 
 # Create your views here.
@@ -76,59 +76,59 @@ class UserDetail(generics.RetrieveAPIView):
         if request.user.id != pk:
             raise PermissionDenied('Unauthorized action')
         user = request.user
-        return Response({ 'user': user.data, 'groups': user.data['groups'] })
+        return Response({ 'user': user.data, 'circles': user.data['circles'] })
 
 
-class GroupList(generics.ListCreateAPIView):
+class CircleList(generics.ListCreateAPIView):
     # permission_classes=(IsAuthenticated)
     def get(self, request):
         """GET membership/groups/""" # not used in routing chart
-        groups = Group.objects.all()
-        serializer = GroupSerializer(groups, many=True)
+        circles = Circle.objects.all()
+        serializer = CircleSerializer(circles, many=True)
         return Response(serializer.data)
-        # # might be needed later, but not in routing chart
+        # # might be needed later, but not in routing chart for now
 
     # serializer_class used when posting group
-    serializer_class = GroupSerializer
+    serializer_class = CircleSerializer
     def post(self, request):
         """POST membership/groups/"""
         request.data['admin'] = request.user.id
-        new_group = GroupSerializer(data=request.data)
-        if new_group.is_valid():
-            new_group.save()
-            return Response(new_group.data, status=status.HTTP_201_CREATED)
+        new_circle = CircleSerializer(data=request.data)
+        if new_circle.is_valid():
+            new_circle.save()
+            return Response(new_circle.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(new_group.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(new_circle.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GroupDetail(generics.RetrieveUpdateDestroyAPIView):
+class CircleDetail(generics.RetrieveUpdateDestroyAPIView):
     # permission_classes=(IsAuthenticated)
         # set by default in settings.py
         # if we only want to show a discussion if the user is signed in
         # like requiresToken middleware from express projects
     def get(self, request, pk):
         """GET membership/groups/<int:pk>/"""
-        group = get_object_or_404(Group, pk=pk)
-        if request.user not in group.users:
+        circle = get_object_or_404(Cicle, pk=pk)
+        if request.user not in circle.users:
             raise PermissionDenied('Unauthorized action')
-        serializer = GroupSerializer(group)
-        return Response({ 'group': serializer.data, 'users': serializer.data['users'], 'discussions': serializer.data['discussions'], 'admin_id': serializer.data['admin'] })
+        serializer = CircleSerializer(circle)
+        return Response({ 'circle': serializer.data, 'users': circle.users, 'discussions': serializer.data['discussions'], 'admin_id': serializer.data['admin'] })
 
     def delete(self, request, pk):
         """DELETE membership/groups/<int:pk>/"""
-        group = get_object_or_404(Group, pk=pk)
-        if request.user.id != group.admin:
+        circle = get_object_or_404(Circle, pk=pk)
+        if request.user.id != circle.admin:
             raise PermissionDenied('Unauthorized action')
-        group.delete()
+        circle.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def update(self, request, pk):
         """UPDATE membership/groups/<int:pk>/"""
-        group = get_object_or_404(Group, pk=pk)
-        if request.user.id != group.admin:
+        circle = get_object_or_404(Circle, pk=pk)
+        if request.user.id != circle.admin:
             raise PermissionDenied('Unauthorized action')
         request.data['admin'] = request.user.id
-        serializer = GroupSerializer(group, data=request.data)
+        serializer = CircleSerializer(circle, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

@@ -1,12 +1,12 @@
 from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth import get_user_model
-from ..membership.models import Group
+# from ..membership.models import Circle
 
 # Create your models here.
 # Model schema for discussions_api_discussion table
 class Discussion(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='discussions') # related_name allows access to an array of this model's instances from the related 1:M model's serializer/view
+    circle = models.ForeignKey('membership.Circle', on_delete=models.CASCADE, related_name='discussions') # related_name allows access to an array of this model's instances from the related 1:M model's serializer/view
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=255)
     admin = models.IntegerField()

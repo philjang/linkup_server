@@ -18,22 +18,22 @@ class DiscussionList(generics.ListCreateAPIView):
     # queryset = Discussion.objects.all().order_by('id')
     # # tell django what serializer to use
     # serializer_class = DiscussionSerializer
-    def get(self, request, group_id):
+    def get(self, request, circle_id):
         """GET api/discussions/""" # not used in routing chart
         # discussions = Discussion.objects.all().order_by('name')
         # to filter by the current group
-        discussions = Discussion.objects.filter(group = group_id)
+        discussions = Discussion.objects.filter(circle = circle_id)
         serializer = DiscussionSerializer(discussions, many=True)
         # in generics -> method_APIVIEW -> get() -> list():
         # serializer = model_serializer(model_queryset, many=True)
         # return Response(serializer.data)
         return Response(serializer.data)
 
-    def post(self, request, group_id):
+    def post(self, request, circle_id):
         """POST api/discussions/"""
         # set admin field of new discussion to current-user for update/delete access
         request.data['admin'] = request.user.id
-        request.data['group'] = group_id ### todo - does this successfully link current group?
+        request.data['circle'] = circle_id ### todo - does this successfully link current group?
         new_discussion = DiscussionSerializer(data=request.data)
         # new_model_instance = model_serializer(data=request.data)
         # { name: 'discussion 1', description: 'description 1' ... }
@@ -60,7 +60,7 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
         discussion = get_object_or_404(Discussion, pk=pk)
 
         # check that user is in the group that contains this discussion
-        if discussion.group not in request.user.groups:
+        if discussion.circle not in request.user.circles:
             # raise like throw in js (cause a PermissionDenied error to occur)
             raise PermissionDenied('Unauthorized action')
 
@@ -68,7 +68,7 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
         # only responds with discussion data
         # return Response(serializer.data)
         # responding with discussion and asociated admin's id, group, as well as posts
-        return Response({ 'discussion': serializer.data, 'posts': serializer.data['posts'], 'group': serializer.data['group'], 'admin_id': serializer.data['admin'] })
+        return Response({ 'discussion': serializer.data, 'posts': serializer.data['posts'], 'circle': serializer.data['circle'], 'admin_id': serializer.data['admin'] })
         # in generics -> method_APIVIEW -> get() -> retrieve():
         # serializer = model_serializer(get_object_or_404(model_queryset, **filter_kwargs))
         # return Response(serializer.data)
@@ -157,6 +157,6 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
+
 
 

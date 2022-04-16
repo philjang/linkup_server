@@ -39,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'username' # not sure if needed, as username is default
 
     # this is what is prompted for when creating superuser
-    # REQUIRED_FIELDS = ['name']
+    REQUIRED_FIELDS = ['email']
 
     def __str__(self):
         return f'user: {self.username} (id:{self.id})'
@@ -59,19 +59,20 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 # Model schema for group table
-class Group(models.Model):
-    users = models.ManyToManyField(get_user_model(), related_name='groups', through='Membership', through_fields=('group','user'))
+class Circle(models.Model):
+    # users = models.ManyToManyField(get_user_model())
+    users = models.ManyToManyField(get_user_model(), related_name='circles', through='user_circle', through_fields=('circle','user'))
     name = models.CharField(max_length=255)
     admin = models.IntegerField()
 
     def __str__(self):
-        return f'group: {self.name}, (id:{self.id})'
+        return f'circle: {self.name}, (id:{self.id})'
 
 # custom join table - allows extra fields if needed
-class Membership(models.Model):
+class user_circle(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    circle = models.ForeignKey(Circle, on_delete=models.CASCADE)
     date_joined = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user} joined {self.group} on {self.date_joined}'
+        return f'{self.user} joined {self.circle} on {self.date_joined}'

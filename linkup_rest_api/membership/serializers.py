@@ -1,18 +1,23 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Group
-from linkup_rest_api.discussions_api.serializers import DiscussionSerializer
-from .serializers import GroupSerializer # to use in UserSerializer
+from .models import Circle
 
 # Django uses serializers.ModelSerializer convert sql to JSON
 # serializers used to read/create/update models
     
+class CircleSerializer(serializers.ModelSerializer):
+    # users = UserSerializer(many=True, read_only=True)
+    # discussions = DiscussionSerializer(many=True, read_only=True)
+    class Meta:
+        model = Circle
+        # can also use fields = __all__, but best practice to be explicit
+        fields = ('id','name','admin')
 
-# defined under GroupSerializer to have access for using as self.posts
+# defined under CircleSerializer to have access for using as self.posts
 class UserSerializer(serializers.ModelSerializer): 
     # this serializer is used for user creation
     # login serializer inherits from this serializer to require certain data for login
-    groups = GroupSerializer(many=True, read_only=True)
+    circles = CircleSerializer(many=True, read_only=True)
     class Meta:
         model = get_user_model()
         fields = ('id', 'username', 'email', 'password') ### do I need password removed?
@@ -38,11 +43,3 @@ class UserRegisterSerializer(serializers.Serializer): # note this is using Seria
             raise serializers.ValidationError('Please make sure your passwords match.')
         # return data if both checks pass
         return data
-
-class GroupSerializer(serializers.ModelSerializer):
-    users = UserSerializer(many=True, read_only=True)
-    discussions = DiscussionSerializer(many=True, read_only=True)
-    class Meta:
-        model = Group
-        # can also use fields = __all__, but best practice to be explicit
-        fields = ('id','name','admin')

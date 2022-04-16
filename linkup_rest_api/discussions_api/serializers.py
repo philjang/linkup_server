@@ -15,4 +15,4 @@ class DiscussionSerializer(serializers.ModelSerializer):
     posts = PostSerializer(many=True, read_only=True) # allows access to related 1:M model using related_name
     class Meta:
         model = Discussion # dictates which model will be used
-        fields = ('id', 'name', 'description', 'admin', 'group')
+        fields = ('id', 'name', 'description', 'admin', 'circle')

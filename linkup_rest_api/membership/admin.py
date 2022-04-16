@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 # Register your models here.
-from .models import Group
+from .models import Circle
 
 class UserAdmin(BaseUserAdmin):
     ordering = ['id']
@@ -40,4 +40,4 @@ class UserAdmin(BaseUserAdmin):
 # register the model and tell Django to use the above UserAdmin
 # class to format the pages:
 admin.site.register(get_user_model(), UserAdmin)
-admin.site.register(Group)
+admin.site.register(Circle)
