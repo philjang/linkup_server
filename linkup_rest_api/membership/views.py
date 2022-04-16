@@ -151,3 +151,5 @@ class CircleDetail(generics.RetrieveUpdateDestroyAPIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# add view to allow adding other users to circle
