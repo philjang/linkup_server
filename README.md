@@ -60,7 +60,7 @@ As the world quickly got thrown into the chaos of COVID, many status quos were d
 # ERD
 ![ERD of database](assets/ERD.drawio.png)
 
-# URL Patterns
+# Front-End URL Patterns (React Routes)
 | Path               | Purpose                                                 |
 | ------------------ | ------------------------------------------------------- |
 | `/`                | Landing Page                                            |

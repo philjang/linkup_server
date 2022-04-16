@@ -108,7 +108,7 @@ class CircleDetail(generics.RetrieveUpdateDestroyAPIView):
         # like requiresToken middleware from express projects
     def get(self, request, pk):
         """GET membership/groups/<int:pk>/"""
-        circle = get_object_or_404(Cicle, pk=pk)
+        circle = get_object_or_404(Circle, pk=pk)
         if request.user not in circle.users:
             raise PermissionDenied('Unauthorized action')
         serializer = CircleSerializer(circle)
