@@ -4,14 +4,19 @@ from .models import Circle
 
 # Django uses serializers.ModelSerializer convert sql to JSON
 # serializers used to read/create/update models
+
+class DiscussionSerializer(serializers.ModelSerializer): 
+    class Meta:
+        model = 'discussions_api.Discussion' 
+        fields = ('id', 'name', 'description', 'admin', 'circle')
     
 class CircleSerializer(serializers.ModelSerializer):
     # users = UserSerializer(many=True, read_only=True)
-    # discussions = DiscussionSerializer(many=True, read_only=True)
+    discussions = DiscussionSerializer(many=True, read_only=True)
     class Meta:
         model = Circle
         # can also use fields = __all__, but best practice to be explicit
-        fields = ('id','name','admin')
+        fields = ('id','name', 'discussions', 'admin')
 
 # defined under CircleSerializer to have access for using as self.posts
 class UserSerializer(serializers.ModelSerializer): 

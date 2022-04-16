@@ -100,7 +100,7 @@ class CircleList(generics.ListCreateAPIView):
         if new_circle.is_valid():
             new_circle.save()
             # print(new_circle)
-            circle = get_object_or_404(Circle, pk=new_circle.data['id'])
+            circle = get_object_or_404(Circle, pk=new_circle.data['id']) # retrieve created circle, unsure how to make this cleaner (unsure how to access created instance when using serializers)
             # print(circle)
             circle.users.add(request.user)
             circle.save()
@@ -117,12 +117,19 @@ class CircleDetail(generics.RetrieveUpdateDestroyAPIView):
     def get(self, request, pk):
         """GET membership/groups/<int:pk>/"""
         circle = get_object_or_404(Circle, pk=pk)
-        print(request.user)
-        print(circle.id)
-        if request.user not in circle.users:
+        # print(request.user)
+        # print(circle.users.all())
+        if request.user not in circle.users.all():
             raise PermissionDenied('Unauthorized action')
         serializer = CircleSerializer(circle)
-        return Response({ 'circle': serializer.data, 'users': circle.users, 'discussions': serializer.data['discussions'], 'admin_id': serializer.data['admin'] })
+        # print(f'serializer: {serializer.data}')
+        # Circle.objects.filter(discussions__circle=circle) # to filter many from 1 
+        # todo -- how to display users associated to circle
+        users = circle.users.all()
+        user_serializer = []
+        for user in users:
+            user_serializer.append(UserSerializer(user).data)
+        return Response({ 'circle': serializer.data, 'users': user_serializer, 'discussions': serializer.data['discussions'], 'admin_id': serializer.data['admin'] })
 
     def delete(self, request, pk):
         """DELETE membership/groups/<int:pk>/"""
