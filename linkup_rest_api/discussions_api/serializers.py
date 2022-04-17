@@ -5,6 +5,7 @@ from .models import Discussion, Post
 # serializers used to read/create/update models
     
 class PostSerializer(serializers.ModelSerializer):
+    owner = serializers.SlugRelatedField(read_only=True, slug_field='username')
     class Meta:
         model = Post
         # can also use fields = '__all__', but best practice to be explicit

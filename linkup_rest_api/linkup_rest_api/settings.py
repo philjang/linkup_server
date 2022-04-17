@@ -53,7 +53,7 @@ SECRET_KEY = os.getenv('SECRET')
 # DEBUG = True
 
 # CORS will still block any sites we do not allow
-ALLOWED_HOSTS = ['*'] # like CORS but does not validate protocol (http/https/ftp/etc) or port
+ALLOWED_HOSTS = [] # like CORS but does not validate protocol (http/https/ftp/etc) or port
 
 
 # Application definition
@@ -83,7 +83,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True # used for testing with postman
+CORS_ALLOW_ALL_ORIGINS = False 
 
 # entry point for project's urls.py 
 ROOT_URLCONF = 'linkup_rest_api.urls'
