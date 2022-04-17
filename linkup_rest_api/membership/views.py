@@ -127,8 +127,11 @@ class CircleDetail(generics.RetrieveUpdateDestroyAPIView):
         # todo -- how to display users associated to circle
         users = circle.users.all()
         user_serializer = []
+        # print(users[0])
         for user in users:
-            user_serializer.append(UserSerializer(user).data)
+            print(str(user))
+            # user_serializer.append(UserSerializer(user).data) # cannot append serializer data into list (data type incorrect)
+            user_serializer.append(str(user))
         return Response({ 'circle': serializer.data, 'users': user_serializer, 'discussions': serializer.data['discussions'], 'admin_id': serializer.data['admin'] })
 
     def delete(self, request, pk):

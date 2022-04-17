@@ -77,15 +77,15 @@ As the world quickly got thrown into the chaos of COVID, many status quos were d
 | POST   | `membership/login`      | logs in an existing user                                         |
 | DELETE | `membership/logout`     | logs user out, removes token from user, deletes all session data |
 | GET    | `membership/users/:id`  | READ all groups associated with current user                     |
-| POST   | `membership/groups`     | CREATE a new group                                               |
+| POST   | `membership/groups`     | CREATE a new group, makes current user admin                     |
 | PUT    | `membership/groups/:id` | UPDATE a group with :id, if admin                                |
 | DELETE | `membership/groups/:id` | DELETE a group with :id, if admin                                |
 | GET    | `membership/groups/:id` | READ all discussions and users associated to group with :id      |
-| POST   | `api/discussions`       | CREATE a new discussion                                          |
+| POST   | `api/discussions`       | CREATE a new discussion, makes current user admin                |
 | PUT    | `api/discussions/:id`   | UPDATE a discussion with :id, if admin                           |
 | DELETE | `api/discussions/:id`   | DELETE a discussion with :id, if admin                           |
 | GET    | `api/discussions/:id`   | READ all posts associated to discussion with :id                 |
-| POST   | `api/posts`             | CREATE a new post                                                |
+| POST   | `api/posts`             | CREATE a new post, makes current user owner                      |
 | PUT    | `api/posts/:id`         | UPDATE a post with :id, if owner                                 |
 | DELETE | `api/posts/:id`         | DELETE a post with :id, if owner                                 |
 

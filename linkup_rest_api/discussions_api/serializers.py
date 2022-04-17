@@ -12,7 +12,8 @@ class PostSerializer(serializers.ModelSerializer):
 
 # defined under PostSerializer to have access for using as self.posts
 class DiscussionSerializer(serializers.ModelSerializer): 
-    posts = PostSerializer(many=True, read_only=True) # allows access to related 1:M model using related_name
+    # posts = PostSerializer(many=True, read_only=True) # allows access to related 1:M model using related_name
+    posts = serializers.StringRelatedField(many=True)
     class Meta:
         model = Discussion # dictates which model will be used
         fields = ('id', 'name', 'description', 'posts', 'admin', 'circle')

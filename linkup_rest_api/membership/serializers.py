@@ -1,18 +1,20 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Circle
+# from ..discussions_api.serializers import DiscussionSerializer
 
 # Django uses serializers.ModelSerializer convert sql to JSON
 # serializers used to read/create/update models
 
 class DiscussionSerializer(serializers.ModelSerializer): 
     class Meta:
-        model = 'discussions_api.Discussion' 
+        model = 'discussion_api.Discussion' 
         fields = ('id', 'name', 'description', 'admin', 'circle')
     
 class CircleSerializer(serializers.ModelSerializer):
     # users = UserSerializer(many=True, read_only=True)
-    discussions = DiscussionSerializer(many=True, read_only=True)
+    # discussions = DiscussionSerializer(many=True, read_only=True)
+    discussions = serializers.StringRelatedField(many=True) # nested serializers cannot be serialized to send as JSON
     class Meta:
         model = Circle
         # can also use fields = __all__, but best practice to be explicit

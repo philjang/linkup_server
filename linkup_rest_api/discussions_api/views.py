@@ -18,11 +18,11 @@ class DiscussionList(generics.ListCreateAPIView):
     # queryset = Discussion.objects.all().order_by('id')
     # # tell django what serializer to use
     # serializer_class = DiscussionSerializer
-    def get(self, request, circle_id):
+    def get(self, request):
         """GET api/discussions/""" # not used in routing chart
         # discussions = Discussion.objects.all().order_by('name')
         # to filter by the current group
-        discussions = Discussion.objects.filter(circle = circle_id)
+        discussions = Discussion.objects.filter(admin=request.user.id)
         serializer = DiscussionSerializer(discussions, many=True)
         # in generics -> method_APIVIEW -> get() -> list():
         # serializer = model_serializer(model_queryset, many=True)
