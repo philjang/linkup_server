@@ -163,11 +163,11 @@ class MemberAdd(generics.CreateAPIView):
     def post(self, request, pk):
         """POST membership/groups/<int:pk>/add/"""
         circle = get_object_or_404(Circle, pk=pk)
-        print(circle)
+        # print(circle)
         if request.user.id != circle.admin:
             raise PermissionDenied('Unauthorized action')
         user = get_object_or_404(get_user_model(), username=request.data['username'])
-        print(user)
+        # print(user)
         circle.users.add(user)
         circle.save()
         # todo - better way to show record?
@@ -182,5 +182,13 @@ class MemberAdd(generics.CreateAPIView):
 
 # view to remove members from circle
 class MemberDel(generics.DestroyAPIView):
-    def delete(self, request):
+    def delete(self, request, pk):
         """DELETE membership/groups/<int:pk>/del/"""
+        circle = get_object_or_404(Circle, pk=pk)
+        if request.user.id != circle.admin:
+            raise PermissionDenied('Unauthorized action')
+        user = get_object_or_404(get_user_model(), username=request.data['username'])
+        circle.users.remove(user)
+        circle.save()
+        booted = f'{user} removed from {circle} on {datetime.datetime.now()}'
+        return Response(booted, status=status.HTTP_200_OK)
