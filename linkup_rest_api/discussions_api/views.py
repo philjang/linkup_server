@@ -7,6 +7,7 @@ from rest_framework.response import Response # import to modify CRUD methods
 from rest_framework.exceptions import PermissionDenied # import function for raising error when missing token (403 forbidden)
 from .serializers import DiscussionSerializer, PostSerializer
 from .models import Discussion, Post
+from django.apps import apps
 
 # views to connect DiscussionSerializer to Discussion model
 
@@ -31,6 +32,12 @@ class DiscussionList(generics.ListCreateAPIView):
 
     def post(self, request):
         """POST api/discussions/"""
+        # only allows posting a discussion if in the group
+        Circle = apps.get_model('membership.Circle')
+        circle = get_object_or_404(Circle, pk=request.data['circle_id'])
+        # print(circle)
+        if request.user not in circle.users.all():
+            raise PermissionDenied('Unauthorized action')
         # set admin field of new discussion to current-user for update/delete access
         request.data['admin'] = request.user.id
         request.data['circle'] = request.data['circle_id'] ### todo - does this successfully link current group?
@@ -60,8 +67,8 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
         discussion = get_object_or_404(Discussion, pk=pk)
 
         # check that user is in the group that contains this discussion
-        print(request.user.circles)
-        if discussion.circle not in request.user.circles:
+        # print(discussion.circle)
+        if discussion.circle not in request.user.circles.all():
             # raise like throw in js (cause a PermissionDenied error to occur)
             raise PermissionDenied('Unauthorized action')
 
@@ -94,7 +101,7 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
 
         # makes sure admin field is set to current user's id (prevents sending false credentials in request data to change admin) 
         request.data['admin'] = request.user.id
-        request.data['circle'] = request.data['circle_id']
+        request.data['circle'] = discussion.circle
         
         # validate updates with serializer 
         # similar format to combining get and post

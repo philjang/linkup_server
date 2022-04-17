@@ -14,7 +14,7 @@ class DiscussionSerializer(serializers.ModelSerializer):
 class CircleSerializer(serializers.ModelSerializer):
     # users = UserSerializer(many=True, read_only=True)
     # discussions = DiscussionSerializer(many=True, read_only=True)
-    discussions = serializers.StringRelatedField(many=True) # nested serializers cannot be serialized to send as JSON
+    discussions = serializers.StringRelatedField(many=True, read_only=True) # nested serializers cannot be serialized to send as JSON
     class Meta:
         model = Circle
         # can also use fields = __all__, but best practice to be explicit
