@@ -71,7 +71,7 @@ class Circle(models.Model):
 # custom join table - allows extra fields if needed
 class user_circle(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    circle = models.ForeignKey(Circle, on_delete=models.CASCADE)
+    circle = models.ForeignKey(Circle, related_name='membership', on_delete=models.CASCADE)
     date_joined = models.DateField(auto_now_add=True)
 
     def __str__(self):

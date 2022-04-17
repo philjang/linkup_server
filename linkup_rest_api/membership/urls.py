@@ -7,5 +7,7 @@ urlpatterns = [
     path('logout/', views.LogOut.as_view(), name='logout'),
     path('users/<int:pk>/', views.UserDetail.as_view(), name='user_detail'),
     path('groups/', views.CircleList.as_view(), name='group_list'),
-    path('groups/<int:pk>/', views.CircleDetail.as_view(), name='group_detail')
+    path('groups/<int:pk>/', views.CircleDetail.as_view(), name='group_detail'),
+    path('groups/<int:pk>/add/', views.MemberAdd.as_view(), name='group_detail'),
+    path('groups/<int:pk>/del/', views.MemberDel.as_view(), name='group_detail')
 ]

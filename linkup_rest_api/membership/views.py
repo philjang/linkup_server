@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from .serializers import CircleSerializer, UserRegisterSerializer, UserSerializer, DiscussionSerializer
 from .models import Circle, user_circle
+import datetime
 
 
 # Create your views here.
@@ -156,4 +157,30 @@ class CircleDetail(generics.RetrieveUpdateDestroyAPIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# add view to allow adding other users to circle
+
+# view to allow adding other users to circle
+class MemberAdd(generics.CreateAPIView):
+    def post(self, request, pk):
+        """POST membership/groups/<int:pk>/add/"""
+        circle = get_object_or_404(Circle, pk=pk)
+        print(circle)
+        if request.user.id != circle.admin:
+            raise PermissionDenied('Unauthorized action')
+        user = get_object_or_404(get_user_model(), username=request.data['username'])
+        print(user)
+        circle.users.add(user)
+        circle.save()
+        # todo - better way to show record?
+        # membership = []
+        # for member_log in circle.membership.all():
+        #     # print(member_log)
+        #     membership.append(str(member_log))
+        # print(membership)
+        membership = f'{user} added to {circle} on {datetime.datetime.now()}'
+        return Response(membership, status=status.HTTP_201_CREATED)
+
+
+# view to remove members from circle
+class MemberDel(generics.DestroyAPIView):
+    def delete(self, request):
+        """DELETE membership/groups/<int:pk>/del/"""
