@@ -75,8 +75,9 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
         serializer = DiscussionSerializer(discussion)
         # only responds with discussion data
         # return Response(serializer.data)
+        posts = PostSerializer(discussion.posts.all(), many=True).data
         # responding with discussion and asociated admin's id, group, as well as posts
-        return Response({ 'discussion': serializer.data, 'posts': serializer.data['posts'], 'circle': serializer.data['circle'], 'admin_id': serializer.data['admin'] })
+        return Response({ 'discussion': serializer.data, 'posts': posts, 'circle': serializer.data['circle'], 'admin_id': serializer.data['admin'] })
         # in generics -> method_APIVIEW -> get() -> retrieve():
         # serializer = model_serializer(get_object_or_404(model_queryset, **filter_kwargs))
         # return Response(serializer.data)
