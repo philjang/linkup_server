@@ -74,7 +74,7 @@ As the world quickly got thrown into the chaos of COVID, many status quos were d
 | Method | Path                        | Purpose                                                          |
 | ------ | --------------------------- | ---------------------------------------------------------------- |
 | POST   | `membership/register`       | CREATE a new user                                                |
-| POST   | `membership/login`          | logs in an existing user                                         |
+| POST   | `membership/login`          | logs in an existing user, adds token to user and sends it back   |
 | DELETE | `membership/logout`         | logs user out, removes token from user, deletes all session data |
 | GET    | `membership/users/:id`      | READ all groups associated with current user                     |
 | POST   | `membership/groups`         | CREATE a new group, makes current user admin                     |

@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404 # to get single model instance
 from rest_framework import generics, status # import generic API views, status module for http response
 from rest_framework.response import Response # import to modify CRUD methods
 from rest_framework.exceptions import PermissionDenied # import function for raising error when missing token (403 forbidden)
-from .serializers import DiscussionSerializer, PostSerializer
+from .serializers import DiscussionSerializer, PostSerializer, ReadPostSerializer
 from .models import Discussion, Post
 from django.apps import apps
 
@@ -75,7 +75,7 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
         serializer = DiscussionSerializer(discussion)
         # only responds with discussion data
         # return Response(serializer.data)
-        posts = PostSerializer(discussion.posts.all(), many=True).data
+        posts = ReadPostSerializer(discussion.posts.all(), many=True).data
         # responding with discussion and asociated admin's id, group, as well as posts
         return Response({ 'discussion': serializer.data, 'posts': posts, 'circle': serializer.data['circle'], 'admin_id': serializer.data['admin'] })
         # in generics -> method_APIVIEW -> get() -> retrieve():

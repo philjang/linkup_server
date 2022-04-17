@@ -1,11 +1,19 @@
 from rest_framework import serializers
 from .models import Discussion, Post
+from django.contrib.auth import get_user_model
 
 # Django uses serializers.ModelSerializer convert sql to JSON
 # serializers used to read/create/update models
-    
-class PostSerializer(serializers.ModelSerializer):
+
+## todo - unable to post using PostSerializer without using owner_name for slug_field, but this prevents access to owner_name on read
+class ReadPostSerializer(serializers.ModelSerializer):
     owner = serializers.SlugRelatedField(read_only=True, slug_field='username')
+    class Meta:
+        model = Post
+        # can also use fields = '__all__', but best practice to be explicit
+        fields = ('id','content','time_posted','discussion','owner')
+
+class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         # can also use fields = '__all__', but best practice to be explicit
