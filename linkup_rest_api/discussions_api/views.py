@@ -161,9 +161,10 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, pk):
         """UPDATE api/posts/<int:pk>"""
         post = get_object_or_404(Post, pk=pk)
-        if request.user.id != post.owner:
+        if request.user != post.owner:
             raise PermissionDenied('Unauthorized action')
         request.data['owner'] = request.user.id
+        request.data['discussion'] = post.discussion.id
         serializer = PostSerializer(post, data=request.data)
         if serializer.is_valid():
             serializer.save()

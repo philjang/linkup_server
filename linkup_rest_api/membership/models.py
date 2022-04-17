@@ -75,4 +75,4 @@ class user_circle(models.Model):
     date_joined = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user} joined {self.circle} on {self.date_joined}'
+        return f'{self.user}, joined {self.circle}, on {self.date_joined}'
