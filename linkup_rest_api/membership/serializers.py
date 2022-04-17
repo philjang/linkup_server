@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Circle
+from django.apps import apps
+Discussion = apps.get_model('discussions_api.Discussion')
 # from ..discussions_api.serializers import DiscussionSerializer
 
 # Django uses serializers.ModelSerializer convert sql to JSON
@@ -8,7 +10,7 @@ from .models import Circle
 
 class DiscussionSerializer(serializers.ModelSerializer): 
     class Meta:
-        model = 'discussion_api.Discussion' 
+        model = Discussion 
         fields = ('id', 'name', 'description', 'admin', 'circle')
     
 class CircleSerializer(serializers.ModelSerializer):

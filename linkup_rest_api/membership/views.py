@@ -6,7 +6,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 # from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
-from .serializers import CircleSerializer, UserRegisterSerializer, UserSerializer
+from .serializers import CircleSerializer, UserRegisterSerializer, UserSerializer, DiscussionSerializer
 from .models import Circle, user_circle
 
 
@@ -124,15 +124,16 @@ class CircleDetail(generics.RetrieveUpdateDestroyAPIView):
         serializer = CircleSerializer(circle)
         # print(f'serializer: {serializer.data}')
         # Circle.objects.filter(discussions__circle=circle) # to filter many from 1 
-        # todo -- how to display users associated to circle
         users = circle.users.all()
-        user_serializer = []
+        usernames = []
         # print(users[0])
         for user in users:
-            print(str(user))
+            # print(str(user))
             # user_serializer.append(UserSerializer(user).data) # cannot append serializer data into list (data type incorrect)
-            user_serializer.append(str(user))
-        return Response({ 'circle': serializer.data, 'users': user_serializer, 'discussions': serializer.data['discussions'], 'admin_id': serializer.data['admin'] })
+            usernames.append(user.username)
+        # users = UserSerializer(circle.users.all(), many=True).data
+        discussions = DiscussionSerializer(circle.discussions.all(), many=True).data
+        return Response({ 'circle': serializer.data, 'users': usernames, 'discussions': discussions, 'admin_id': serializer.data['admin'] })
 
     def delete(self, request, pk):
         """DELETE membership/groups/<int:pk>/"""
