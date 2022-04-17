@@ -42,7 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['email']
 
     def __str__(self):
-        return f'user: {self.username} (id:{self.id})'
+        return f'user(id:{self.id}): {self.username}'
 
     def get_auth_token(self):
         Token.objects.filter(user=self).delete() # deletes current token if existing
@@ -66,7 +66,7 @@ class Circle(models.Model):
     admin = models.IntegerField()
 
     def __str__(self):
-        return f'circle: {self.name}, (id:{self.id})'
+        return f'circle(id:{self.id}): {self.name}'
 
 # custom join table - allows extra fields if needed
 class user_circle(models.Model):

@@ -32,7 +32,7 @@ class DiscussionList(generics.ListCreateAPIView):
 
     def post(self, request):
         """POST api/discussions/"""
-        # only allows posting a discussion if in the group
+        # only allows posting a discussion if user is in the group
         Circle = apps.get_model('membership.Circle')
         circle = get_object_or_404(Circle, pk=request.data['circle_id'])
         # print(circle)
@@ -101,7 +101,7 @@ class DiscussionDetail(generics.RetrieveUpdateDestroyAPIView):
 
         # makes sure admin field is set to current user's id (prevents sending false credentials in request data to change admin) 
         request.data['admin'] = request.user.id
-        request.data['circle'] = discussion.circle
+        request.data['circle'] = discussion.circle.id
         
         # validate updates with serializer 
         # similar format to combining get and post
@@ -118,15 +118,19 @@ class PostList(generics.ListCreateAPIView):
     # serializer_class = PostSerializer
     def get(self, request): # not used in routing chart
         """GET api/posts/"""
-        posts = Post.objects.all()
+        posts = Post.objects.filter(owner=request.user.id)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
     
     serializer_class = PostSerializer
-    def post(self, request, discussion_id):
+    def post(self, request):
         """POST api/posts/"""
+        # only allows creating a post if user is in the group that contains the discussion
+        discussion = get_object_or_404(Discussion, pk=request.data['discussion_id'])
+        if request.user not in discussion.circle.users.all():
+            raise PermissionDenied('Unauthorized action')
         request.data['owner'] = request.user.id
-        request.data['discussion'] = discussion_id
+        request.data['discussion'] = request.data['discussion_id']
         new_post = PostSerializer(data=request.data)
         if new_post.is_valid():
             new_post.save()

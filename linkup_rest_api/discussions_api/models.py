@@ -24,4 +24,4 @@ class Post(models.Model):
     time_posted = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'post: {self.content}, by: {self.owner} (id:{self.id})'
+        return f'post(id:{self.id}): {self.content}, by {self.owner}'
