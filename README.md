@@ -39,8 +39,10 @@ Deployment Coming Soon...
     <details>
       <summary> List </summary>
 
-      - axios
+      - react
+      - react-dom
       - react-router-dom
+      - axios
 
     </details>
 - Create a `.env.local` file in the root directory
