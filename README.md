@@ -18,7 +18,8 @@ Deployment Coming Soon...
 <details>
   <summary>Click to Display</summary>
 
-- Landing Page
+Coming Soon...
+<!-- - Landing Page
 ![Landing Page]()
 - Register/Login Page
 ![Register/Login Page]()
@@ -27,7 +28,7 @@ Deployment Coming Soon...
 - Group Page
 ![Group Page]()
 - Discussion Page
-![Discussion Page]()
+![Discussion Page]() -->
 
 </details>
 
