@@ -82,7 +82,8 @@ Deployment Coming Soon...
       - sqlparse==0.4.2
 
     </details>
-- Create a `.env` file in the root directory
+- `cd` into `linkup_rest_api` - the one that is level with `manage.py`
+- Create a `.env` file in this directory
 
     Inside `.env`:
     ```
