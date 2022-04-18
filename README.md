@@ -53,7 +53,7 @@ Deployment Coming Soon...
     ```
     Make sure that this port number matches what the server is running on, django default: 8000
 - Run `npm start` in your terminal - client will run on port 3000 by default
-    - Be sure to change the `CORS_ORIGIN_WHITELIST` inside the server settings.py accordingly if you wish to change this
+    - Be sure to change the `CORS_ORIGIN_WHITELIST` inside the server-side settings.py file accordingly if you wish to change this
 
 ## Installation Instructions -- Back End
 
