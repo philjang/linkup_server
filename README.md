@@ -69,7 +69,6 @@ Coming Soon...
     <details>
       <summary> List </summary>
 
-      - axios
       - asgiref==3.5.0
       - dj-database-url==0.5.0
       - Django==4.0.4
